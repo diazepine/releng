@@ -15,9 +15,10 @@ def init_machine_config(machine: MachineSpec,
                         sdk_prefix: Optional[Path],
                         call_selected_meson: Callable,
                         config: ConfigParser,
-                        outpath: List[str],
-                        outenv: Dict[str, str],
-                        outdir: Path):
+                        outpath: list[str],
+                        outenv: dict[str, str],
+                        outdir: Path,
+                        options: dict = {}):
     ndk_found = False
     try:
         ndk_root = Path(environ["ANDROID_NDK_ROOT"])
@@ -64,9 +65,10 @@ def init_machine_config(machine: MachineSpec,
     ]
     c_like_flags = [
         "-DANDROID",
-        "-ffunction-sections",
-        "-fdata-sections",
     ]
+    if "EMBED_BITCODE" not in options:
+        c_like_flags.append("-ffunction-sections")
+        c_like_flags.append("-fdata-sections")
     cxx_like_flags = []
     cxx_link_flags = [
         "-static-libstdc++",

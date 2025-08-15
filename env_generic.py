@@ -20,9 +20,10 @@ def init_machine_config(machine: MachineSpec,
                         sdk_prefix: Optional[Path],
                         call_selected_meson: Callable,
                         config: ConfigParser,
-                        outpath: List[str],
-                        outenv: Dict[str, str],
-                        outdir: Path):
+                        outpath: list[str],
+                        outenv: dict[str, str],
+                        outdir: Path,
+                        options: dict = {}):
     allow_undefined_symbols = machine.os == "freebsd"
 
     options = config["built-in options"]

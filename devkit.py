@@ -39,7 +39,8 @@ class CompilerApplication:
                  machine: MachineSpec,
                  meson_config: Mapping[str, Union[str, Sequence[str]]],
                  output_dir: Path,
-                 dep_symbol_scope: DepSymbolScope = DepSymbolScope.PREFIXED):
+                 dep_symbol_scope: DepSymbolScope = DepSymbolScope.PREFIXED,
+                 prefix_syms: bool = True):
         self.kit = kit
         package, umbrella_header = DEVKITS[kit]
         self.package = package
@@ -51,6 +52,7 @@ class CompilerApplication:
         self.output_dir = output_dir
         self.dep_symbol_scope = dep_symbol_scope
         self.library_filename = None
+        self.prefix_syms = prefix_syms
 
     def run(self):
         output_dir = self.output_dir
@@ -278,13 +280,17 @@ class CompilerApplication:
 
         objcopy = meson_config.get("objcopy", None)
         if self.dep_symbol_scope is DepSymbolScope.PREFIXED and objcopy is not None:
-            thirdparty_symbol_mappings = get_thirdparty_symbol_mappings(output_path, meson_config)
-            renames = "\n".join([f"{original} {renamed}" for original, renamed in thirdparty_symbol_mappings]) + "\n"
-            with tempfile.NamedTemporaryFile() as renames_file:
-                renames_file.write(renames.encode("utf-8"))
-                renames_file.flush()
-                subprocess.run(objcopy + ["--redefine-syms=" + renames_file.name, output_path],
-                               check=True)
+            # New option to prevent renaming, to avoid erroneous bitcode symbols
+            if self.prefix_syms:
+                thirdparty_symbol_mappings = get_thirdparty_symbol_mappings(output_path, meson_config)
+                renames = "\n".join([f"{original} {renamed}" for original, renamed in thirdparty_symbol_mappings]) + "\n"
+                with tempfile.NamedTemporaryFile() as renames_file:
+                    renames_file.write(renames.encode("utf-8"))
+                    renames_file.flush()
+                    subprocess.run(objcopy + ["--redefine-syms=" + renames_file.name, output_path],
+                                check=True)
+            else:
+                thirdparty_symbol_mappings = []
         else:
             thirdparty_symbol_mappings = []
 

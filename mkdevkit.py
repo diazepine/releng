@@ -59,6 +59,12 @@ def main():
                              - prefixed: add the '_frida_' prefix
                              - original: keep symbols exactly as upstream
                             """))
+    parser.add_argument("-p", "--prefixsyms",
+                        help="redefine the produced symbols with the frida_ prefix",
+                        action="store_const",
+                        dest="prefix_syms",
+                        const="prefix_syms",
+                        default=False)
     parser.add_argument("--cc",
                         help="C compiler to use",
                         type=lambda v: parse_array_option_value(v, ool_optvals))
@@ -75,6 +81,7 @@ def main():
     machine = options.machine
     outdir = options.outdir.resolve()
     flavor = options.flavor
+    prefix_syms = options.prefix_syms
 
     cc = options.cc
     if cc is not None:
@@ -96,7 +103,7 @@ def main():
         assert meson_config is not None
 
     try:
-        app = devkit.CompilerApplication(kit, machine, meson_config, outdir, options.dep_symbol_scope)
+        app = devkit.CompilerApplication(kit, machine, meson_config, outdir, options.dep_symbol_scope, prefix_syms)
         app.run()
     except subprocess.CalledProcessError as e:
         print(e, file=sys.stderr)
