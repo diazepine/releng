@@ -73,14 +73,15 @@ options = [
 
 [glib]
 name = "GLib"
-version = "f8e0cd4e9e671a15a69a7323f421f1e8df5c7a10"
-url = "https://github.com/frida/glib.git"
+version = "7dced172c5c9f7d52b5d531e20a986e216d029f3"
+url = "https://github.com/diazepine/glib.git"
 options = [
     "-Dcocoa=disabled",
     "-Dselinux=disabled",
     "-Dxattr=false",
     "-Dlibmount=disabled",
     "-Dtests=false",
+    "-Dfallible_gprivate=true",
     "--force-fallback-for=pcre",
     { value = "-Dglib_debug=disabled", when = "machine.config_is_optimized" },
     { value = "-Dglib_assert=false", when = "machine.config_is_optimized" },
