@@ -73,7 +73,7 @@ options = [
 
 [glib]
 name = "GLib"
-version = "ed4beea2fda766e275c56a3b7f08d34005a0ca50"
+version = "7a604b8e1bcb1a3af4872db9654ee29b1cd9e525"
 url = "https://github.com/diazepine/glib.git"
 options = [
     "-Dcocoa=disabled",
