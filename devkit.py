@@ -236,7 +236,7 @@ class CompilerApplication:
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.STDOUT,
                                  encoding="utf-8").stdout
-        mri_supported = "-M [<mri-script]" in ar_help
+        mri_supported = "-M" in ar_help and "mri" in ar_help.lower()
 
         if mri_supported:
             mri = ["create " + str(output_path)]
